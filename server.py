@@ -30,13 +30,14 @@ def get_data(path):
 
 # HTTP actions for assignment 3
 
+
 @app.route('/users', methods = ['GET'])
 def getUsers():
     with open('data/entries.json', 'r') as f:
         d = json.load(f)
         return(d)
 
-@app.route('/user/', methods = ['GET'])
+@app.route('/users/', methods = ['POST','GET'])
 def addUser():
     newId = uuid.uuid4().hex[:6]
 
@@ -56,9 +57,9 @@ def addUser():
         # Add a new record to the JSON
         data["records"].append(newUser)
 
-    writeToFile(data, fileName)
+    writeToFile(fileName,data)
 
-@app.route('/user/<user_id>', methods = ['GET'])
+@app.route('/user/<user_id>', methods = ['DELETE','GET'])
 def deleteUser(user_id):
     data = ''
     fileName = 'data/entries.json'
@@ -85,10 +86,3 @@ if __name__ == '__main__':
 
   app.run(host='0.0.0.0', port=8081, debug=True)
       
-
-'''
- Build the Docker image:
-   docker image build -t assignment3 .
- Run the Docker image:
-   docker run --rm -it --mount src="$(pwd)",target=/app,type=bind -p 8081:8081 assignment3
-'''
